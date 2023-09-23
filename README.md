@@ -1,4 +1,4 @@
-# HCQR Middleware
+# HCQR 
 
 The `HCQR` package provides a lightweight HCQR (Holistic Command Query Responsibility) middleware for ASP.NET Core applications, 
 making it easy to map routes directly to handlers that implement the `IHandler` interface. 
