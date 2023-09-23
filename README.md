@@ -4,7 +4,7 @@ The `HCQR` package provides a lightweight HCQR (Holistic Command Query Responsib
 making it easy to map routes directly to handlers that implement the `IHandler` interface. 
 This ensures a more clean and direct flow from request to response without any excess boilerplate.
 
-Heavily inspired by HCQR, but more holistic in its approch and condences the handle, response and request objects.
+Heavily inspired by CQRS, but more holistic in its approch and condences the handle, response and request objects.
 
 ## Features
 - Directly maps HTTP routes to command or query handlers.
