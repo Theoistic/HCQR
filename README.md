@@ -45,7 +45,7 @@ public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
 To create a handler, implement the IHandler interface:
 
 ```csharp
-[Map("/api/user/{id}")]
+[Get("/api/user/{id}")]
 public class GetUserHandler : IHandler
 {
     public IResponse Handle(IRequest request)
@@ -55,13 +55,14 @@ public class GetUserHandler : IHandler
 }
 ```
 
-Make sure to mark the handler with the [Map] attribute to specify the route.
+Make sure to mark the handler with the [Get] or [Post] attribute to specify the route.
 
 ### 4. Creating Requests & Responses
 
 Each handler should have a nested class that implements IRequest. For example:
 
 ```csharp
+[Get("/api/user/{id}")]
 public class GetUserHandler : IHandler
 {
     public class Request : IRequest
@@ -81,7 +82,8 @@ Responses can be any object implementing the IResponse interface.
 
 ### 5. Handling Routes
 
-Once everything is set up, any incoming request that matches the mapped routes will be automatically directed to the corresponding handler. The HCQRMiddleware will deserialize any parameters in the route, query string, or body and pass them to your handler.
+Once everything is set up, any incoming request that matches the mapped routes will be automatically directed to the corresponding handler. The HCQRMiddleware will deserialize any parameters in the route, 
+query string, or body and pass them to your handler.
 
 ### Contribute
 

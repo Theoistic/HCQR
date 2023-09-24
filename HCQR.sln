@@ -3,7 +3,14 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34024.191
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HCQR", "HCQR\HCQR.csproj", "{1F552169-F4C6-4A57-A946-BF3C3C5377E5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HCQR", "HCQR\HCQR.csproj", "{1F552169-F4C6-4A57-A946-BF3C3C5377E5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HCQR.Sample", "HCQR.Sample\HCQR.Sample.csproj", "{63350D9D-DF28-4AFF-8D48-EF740A526456}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7194CCC4-AFEB-4079-B15F-E2BFA02F564F}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +22,10 @@ Global
 		{1F552169-F4C6-4A57-A946-BF3C3C5377E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1F552169-F4C6-4A57-A946-BF3C3C5377E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1F552169-F4C6-4A57-A946-BF3C3C5377E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{63350D9D-DF28-4AFF-8D48-EF740A526456}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{63350D9D-DF28-4AFF-8D48-EF740A526456}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{63350D9D-DF28-4AFF-8D48-EF740A526456}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{63350D9D-DF28-4AFF-8D48-EF740A526456}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

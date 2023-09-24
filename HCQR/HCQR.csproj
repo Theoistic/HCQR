@@ -17,6 +17,48 @@
 	  <PackageIcon>Logo.png</PackageIcon>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="SwaggerUI\favicon-16x16.png" />
+    <None Remove="SwaggerUI\favicon-32x32.png" />
+    <None Remove="SwaggerUI\index.css" />
+    <None Remove="SwaggerUI\index.html" />
+    <None Remove="SwaggerUI\oauth2-redirect.html" />
+    <None Remove="SwaggerUI\swagger-initializer.js" />
+    <None Remove="SwaggerUI\swagger-ui-bundle.js" />
+    <None Remove="SwaggerUI\swagger-ui-bundle.js.map" />
+    <None Remove="SwaggerUI\swagger-ui-es-bundle-core.js" />
+    <None Remove="SwaggerUI\swagger-ui-es-bundle-core.js.map" />
+    <None Remove="SwaggerUI\swagger-ui-es-bundle.js" />
+    <None Remove="SwaggerUI\swagger-ui-es-bundle.js.map" />
+    <None Remove="SwaggerUI\swagger-ui-standalone-preset.js" />
+    <None Remove="SwaggerUI\swagger-ui-standalone-preset.js.map" />
+    <None Remove="SwaggerUI\swagger-ui.css" />
+    <None Remove="SwaggerUI\swagger-ui.css.map" />
+    <None Remove="SwaggerUI\swagger-ui.js" />
+    <None Remove="SwaggerUI\swagger-ui.js.map" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="SwaggerUI\favicon-16x16.png" />
+    <EmbeddedResource Include="SwaggerUI\favicon-32x32.png" />
+    <EmbeddedResource Include="SwaggerUI\index.css" />
+    <EmbeddedResource Include="SwaggerUI\index.html" />
+    <EmbeddedResource Include="SwaggerUI\oauth2-redirect.html" />
+    <EmbeddedResource Include="SwaggerUI\swagger-initializer.js" />
+    <EmbeddedResource Include="SwaggerUI\swagger-ui-bundle.js" />
+    <EmbeddedResource Include="SwaggerUI\swagger-ui-bundle.js.map" />
+    <EmbeddedResource Include="SwaggerUI\swagger-ui-es-bundle-core.js" />
+    <EmbeddedResource Include="SwaggerUI\swagger-ui-es-bundle-core.js.map" />
+    <EmbeddedResource Include="SwaggerUI\swagger-ui-es-bundle.js" />
+    <EmbeddedResource Include="SwaggerUI\swagger-ui-es-bundle.js.map" />
+    <EmbeddedResource Include="SwaggerUI\swagger-ui-standalone-preset.js" />
+    <EmbeddedResource Include="SwaggerUI\swagger-ui-standalone-preset.js.map" />
+    <EmbeddedResource Include="SwaggerUI\swagger-ui.css" />
+    <EmbeddedResource Include="SwaggerUI\swagger-ui.css.map" />
+    <EmbeddedResource Include="SwaggerUI\swagger-ui.js" />
+    <EmbeddedResource Include="SwaggerUI\swagger-ui.js.map" />
+  </ItemGroup>
+
 	<ItemGroup>
 		<None Include="..\README.md" Pack="true" PackagePath="" />
 		<None Include="..\Logo.png" Pack="true" PackagePath="" />
@@ -26,6 +68,7 @@
 	<ItemGroup>
 		<PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
+		<PackageReference Include="Microsoft.OpenApi" Version="1.6.8" />
 	</ItemGroup>
 
 </Project>

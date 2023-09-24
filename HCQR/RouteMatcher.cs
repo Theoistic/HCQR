@@ -1,4 +1,6 @@
-﻿namespace HCQR;
+﻿using System.Net.Http;
+
+namespace HCQR;
 
 /// <summary>
 /// Provides functionality to match incoming URLs with registered routes and determine the appropriate handler.
@@ -8,14 +10,14 @@ public static class RouteMatcher
 	/// <summary>
 	/// List of registered routes along with their associated handler types.
 	/// </summary>
-	private static List<RouteHandlerMapping> _routes = new List<RouteHandlerMapping>();
+	private static readonly List<RouteHandlerMapping> _routes = new();
 
 	/// <summary>
 	/// Registers a handler type to a specific route.
 	/// </summary>
 	/// <param name="route">The route or path to associate with the handler.</param>
 	/// <param name="handlerType">The type of the handler to be invoked when the route is matched.</param>
-	public static void Register(string route, Type handlerType)
+	public static void Register(HttpMethod httpMethod, string route, Type handlerType)
 	{
 		var variableNames = new List<string>();
 		var tokens = route.Split('/');
@@ -31,7 +33,8 @@ public static class RouteMatcher
 		{
 			OriginalRoute = route,
 			HandlerType = handlerType,
-			VariableNames = variableNames
+			VariableNames = variableNames,
+			HttpMethod = httpMethod // Store the HTTP method
 		});
 	}
 
@@ -40,15 +43,16 @@ public static class RouteMatcher
 	/// </summary>
 	/// <param name="incomingUrl">The URL to be matched.</param>
 	/// <returns>The match result containing the handler type and route variables, or null if no match is found.</returns>
-	public static RouteMatchResult? Match(string incomingUrl)
+	public static RouteMatchResult? Match(HttpMethod httpMethod, string incomingUrl)
 	{
 		var queryStringStart = incomingUrl.IndexOf("?");
-		var path = queryStringStart >= 0 ? incomingUrl.Substring(0, queryStringStart) : incomingUrl;
-		var queryString = queryStringStart >= 0 ? incomingUrl.Substring(queryStringStart + 1) : null;
+		var path = queryStringStart >= 0 ? incomingUrl[..queryStringStart] : incomingUrl;
+		var queryString = queryStringStart >= 0 ? incomingUrl[(queryStringStart + 1)..] : null;
 
 		var incomingTokens = path.Split('/');
 		foreach (var route in _routes)
 		{
+			if (route.HttpMethod != httpMethod) continue;
 			var routeTokens = route.OriginalRoute.Split('/');
 			if (incomingTokens.Length != routeTokens.Length) continue;
 
@@ -103,12 +107,12 @@ public class RouteHandlerMapping
 	/// <summary>
 	/// Gets or sets the original route pattern.
 	/// </summary>
-	public string OriginalRoute { get; set; }
+	public required string OriginalRoute { get; set; }
 
 	/// <summary>
 	/// Gets or sets the type of the handler associated with the route.
 	/// </summary>
-	public Type HandlerType { get; set; }
+	public required Type HandlerType { get; set; }
 
 	/// <summary>
 	/// Gets or sets the list of variable names in the route.
@@ -116,7 +120,12 @@ public class RouteHandlerMapping
 	/// <remarks>
 	/// For example, in the route "/items/{itemId}", "itemId" would be a variable name.
 	/// </remarks>
-	public List<string> VariableNames { get; set; } = new List<string>();
+	public required List<string> VariableNames { get; set; } = new List<string>();
+
+	/// <summary>
+	/// The HTTP method associated with the route.
+	/// </summary>
+	public required HttpMethod HttpMethod { get; set; } 
 }
 
 /// <summary>
@@ -127,10 +136,10 @@ public class RouteMatchResult
 	/// <summary>
 	/// Gets or sets the type of the handler to be invoked for the matched route.
 	/// </summary>
-	public Type HandlerType { get; set; }
+	public required Type HandlerType { get; set; }
 
 	/// <summary>
 	/// Gets or sets the dictionary of route variables captured from the matched route.
 	/// </summary>
-	public Dictionary<string, string> Variables { get; set; } = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+	public required Dictionary<string, string> Variables { get; set; } = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 }

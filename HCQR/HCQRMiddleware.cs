@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
 using System.Text.Json;
 
 namespace HCQR;
@@ -36,9 +37,46 @@ public class HCQRMiddleware
 	/// <returns>The task representing the asynchronous operation.</returns>
 	public async Task InvokeAsync(HttpContext context)
 	{
+		var path = context.Request.Path.Value.ToLowerInvariant();
+
+		if (HCQRExtensions.UsingSwagger)
+		{
+			if(path.StartsWith("/swagger.json"))
+			{
+				context.Response.ContentType = "application/json";
+				var doc = OpenApiGen.GenerateOpenApiJson(HCQRExtensions.Handlers);
+				await context.Response.WriteAsync(doc);
+				return;
+			}
+			if (path.StartsWith(HCQRExtensions.SwaggerPath))
+			{
+				if (path.EndsWith(HCQRExtensions.SwaggerPath))
+					path += "index.html";
+
+				// Extract the file name from the path
+				var resourceName = $"HCQR.SwaggerUI.{path.Replace($"{HCQRExtensions.SwaggerPath}", "")}";
+
+				// Attempt to get the embedded resource stream
+				var resourceStream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName);
+
+				if (resourceStream != null)
+				{
+					if (path.EndsWith(".js"))
+						context.Response.ContentType = "application/javascript";
+					else if (path.EndsWith(".css"))
+						context.Response.ContentType = "text/css";
+					else if (path.EndsWith(".html"))
+						context.Response.ContentType = "text/html";
+
+					await resourceStream.CopyToAsync(context.Response.Body);
+					return;
+				}
+			}
+		}
+
 		// Check if the request matches any registered route.
-		var path = context.Request.Path.Value;
-		var routeMatch = RouteMatcher.Match(path);
+		path = context.Request.Path.Value;
+		var routeMatch = RouteMatcher.Match(context.Request.Method.GetHttpMethod(), path);
 
 		if (routeMatch != null)
 		{
@@ -54,7 +92,12 @@ public class HCQRMiddleware
 			}
 
 			// Create an instance of the request type.
-			var requestInstance = (IRequest)Activator.CreateInstance(requestType);
+
+			if (Activator.CreateInstance(requestType) is not IRequest requestInstance)
+			{
+				await _next(context);
+				return;
+			}
 
 			// Extract the query parameters from the HTTP request.
 			var queryParameters = context.Request.Query.ToDictionary(
@@ -64,7 +107,7 @@ public class HCQRMiddleware
 			);
 
 			// If the request is POST or PUT, extract the body parameters assuming they are in JSON format.
-			Dictionary<string, string> bodyParameters = new Dictionary<string, string>();
+			Dictionary<string, string>? bodyParameters = new();
 			if (context.Request.Method == "POST" || context.Request.Method == "PUT")
 			{
 				using var reader = new StreamReader(context.Request.Body);
@@ -84,7 +127,7 @@ public class HCQRMiddleware
 				{
 					prop.SetValue(requestInstance, Convert.ChangeType(queryValue, prop.PropertyType));
 				}
-				else if (bodyParameters.TryGetValue(propName, out var bodyValue))
+				else if (bodyParameters != null && bodyParameters.TryGetValue(propName, out var bodyValue))
 				{
 					prop.SetValue(requestInstance, Convert.ChangeType(bodyValue, prop.PropertyType));
 				}
