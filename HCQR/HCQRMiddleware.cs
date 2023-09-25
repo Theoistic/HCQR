@@ -112,8 +112,12 @@ public class HCQRMiddleware
 			{
 				using var reader = new StreamReader(context.Request.Body);
 				var body = await reader.ReadToEndAsync();
-				bodyParameters = JsonSerializer.Deserialize<Dictionary<string, string>>(body);
-			}
+                bodyParameters = JsonSerializer.Deserialize<Dictionary<string, string>>(body, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                if (bodyParameters is not null)
+                {
+                    bodyParameters = new Dictionary<string, string>(bodyParameters, StringComparer.OrdinalIgnoreCase);
+                }
+            }
 
 			// Populate the request instance's properties with values from route variables, query parameters, or the request body.
 			foreach (var prop in requestType.GetProperties())
