@@ -95,6 +95,28 @@ public class OpenApiGen
                     }
                 };
 
+                var authorizeAttribute = handlerType.GetCustomAttributes<AuthorizeAttribute>().FirstOrDefault();
+                if (authorizeAttribute != null)
+                {
+                    operation.Security = new List<OpenApiSecurityRequirement>
+                    {
+                        new OpenApiSecurityRequirement
+                        {
+                            {
+                                new OpenApiSecurityScheme
+                                {
+                                    Reference = new OpenApiReference
+                                    {
+                                        Type = ReferenceType.SecurityScheme,
+                                        Id = "Bearer"  // Assuming using Bearer tokens, adjust as needed
+                                    }
+                                },
+                                new List<string>() // Scopes if necessary, leave empty if none
+                            }
+                        }
+                    };
+                }
+
                 switch (httpMethod)
                 {
                     case HttpMethod.Get:
@@ -121,6 +143,20 @@ public class OpenApiGen
                 }
 
             }
+
+            openApiDocument.Components = new OpenApiComponents
+            {
+                SecuritySchemes = new Dictionary<string, OpenApiSecurityScheme>
+                {
+                    ["Bearer"] = new OpenApiSecurityScheme
+                    {
+                        Type = SecuritySchemeType.Http,
+                        Scheme = "bearer",
+                        BearerFormat = "JWT",  // Adjust this if you're not using JWTs
+                        Description = "JWT Authorization header using the Bearer scheme."
+                    }
+                }
+            };
         }
 
         var writerSettings = new OpenApiJsonWriterSettings();

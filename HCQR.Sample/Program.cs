@@ -31,7 +31,7 @@ namespace HCQR.Sample.News
 			public List<string>? News { get; set; }
 		}
 
-		public IResponse Handle(IRequest request)
+		public IResponse Handle(IRequest? request)
 		{
 			return new Response
 			{
@@ -75,7 +75,7 @@ namespace HCQR.Sample.News
             public string? Message { get; set; }
         }
 
-        public IResponse Handle(IRequest request)
+        public IResponse Handle(IRequest? request)
         {
             var req = (Request)request;
             return new Response

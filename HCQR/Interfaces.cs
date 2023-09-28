@@ -10,7 +10,7 @@ public interface IHandler
 	/// </summary>
 	/// <param name="request">The request to be handled.</param>
 	/// <returns>The response generated after handling the request.</returns>
-	IResponse Handle(IRequest request);
+	IResponse Handle(IRequest? request);
 }
 
 /// <summary>

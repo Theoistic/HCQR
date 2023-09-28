@@ -39,7 +39,8 @@ public class HCQRMiddleware
 	{
 		var path = context.Request.Path.Value.ToLowerInvariant();
 
-		if (HCQRExtensions.UsingSwagger)
+        #region OpenAPI
+        if (HCQRExtensions.UsingSwagger)
 		{
 			if(path.StartsWith("/swagger.json"))
 			{
@@ -73,15 +74,33 @@ public class HCQRMiddleware
 				}
 			}
 		}
+        #endregion
 
-		// Check if the request matches any registered route.
-		path = context.Request.Path.Value;
+        // Check if the request matches any registered route.
+        path = context.Request.Path.Value;
 		var routeMatch = RouteMatcher.Match(context.Request.Method.GetHttpMethod(), path);
 
 		if (routeMatch != null)
 		{
-			// Create the specific handler instance using the resolved service type.
-			var handlerInstance = (IHandler)_serviceProvider.GetRequiredService(routeMatch.HandlerType);
+            // Check if the handler has the AuthorizeAttribute
+            var authorizeAttributes = routeMatch.HandlerType.GetCustomAttributes<AuthorizeAttribute>(true).ToList();
+
+            if (authorizeAttributes.Any())
+            {
+                foreach (var authAttribute in authorizeAttributes)
+                {
+                    if (!AuthorizeAttribute.IsAuthorized(context, authAttribute.Policy)) // Implement the IsAuthorized method to match your auth logic
+                    {
+                        context.Response.StatusCode = 401; // Unauthorized
+                        await context.Response.WriteAsync("Unauthorized");
+                        return;
+                    }
+                }
+            }
+
+
+            // Create the specific handler instance using the resolved service type.
+            var handlerInstance = (IHandler)_serviceProvider.GetRequiredService(routeMatch.HandlerType);
 
 			// Determine if the handler has a nested type implementing the IRequest interface.
 			var requestType = routeMatch.HandlerType.GetNestedTypes().FirstOrDefault(x => typeof(IRequest).IsAssignableFrom(x));
